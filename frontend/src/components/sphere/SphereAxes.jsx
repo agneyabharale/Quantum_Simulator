@@ -1,46 +1,43 @@
 import React from 'react';
 import { Text, Line } from '@react-three/drei';
 
-/**
- * Renders the X, Y, and Z axes for the Bloch Sphere.
- * Each axis has a distinct color for better orientation.
- */
 const SphereAxes = () => {
   const axisSize = 1.2;
   const labelDist = 1.35;
 
   return (
     <group>
-      {/* X Axis (Red-ish) */}
+      {/* X Axis */}
       <Line 
         points={[[-axisSize, 0, 0], [axisSize, 0, 0]]} 
-        color="#ff4444" 
+        color="#000000" 
         lineWidth={1} 
         transparent 
-        opacity={0.4} 
+        opacity={0.3} 
       />
-      <Text position={[labelDist, 0, 0]} fontSize={0.1} color="#ff4444">X</Text>
+      <Text position={[labelDist, 0, 0]} fontSize={0.08} color="#000000" opacity={0.6}>x</Text>
 
-      {/* Y Axis (Green-ish) */}
+      {/* Y Axis */}
       <Line 
         points={[[0, 0, -axisSize], [0, 0, axisSize]]} 
-        color="#44ff44" 
+        color="#000000" 
         lineWidth={1} 
         transparent 
-        opacity={0.4} 
+        opacity={0.3} 
       />
-      <Text position={[0, 0, labelDist]} fontSize={0.1} color="#44ff44">Y</Text>
+      <Text position={[0, 0, labelDist]} fontSize={0.08} color="#000000" opacity={0.6}>y</Text>
 
-      {/* Z Axis (Blue-ish) */}
+      {/* Z Axis */}
       <Line 
         points={[[0, -axisSize, 0], [0, axisSize, 0]]} 
-        color="#4444ff" 
+        color="#000000" 
         lineWidth={1} 
         transparent 
-        opacity={0.4} 
+        opacity={0.3} 
       />
-      <Text position={[0, labelDist, 0]} fontSize={0.1} color="#4444ff">|0⟩</Text>
-      <Text position={[0, -labelDist, 0]} fontSize={0.1} color="#4444ff">|1⟩</Text>
+      {/* Removed font="bold" to prevent RangeError/Crash */}
+      <Text position={[0, labelDist, 0]} fontSize={0.12} color="#000000">|0⟩</Text>
+      <Text position={[0, -labelDist, 0]} fontSize={0.12} color="#000000">|1⟩</Text>
     </group>
   );
 };

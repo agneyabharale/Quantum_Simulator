@@ -28,3 +28,6 @@ class SimulationResponse(BaseModel):
     # The matrix representation of the LAST gate applied
     # Format: [[[real, imag], [real, imag]], [[real, imag], [real, imag]]]
     last_gate_matrix: List[List[List[float]]]
+    
+    # The statevector BEFORE the last gate was applied
+    previous_state: Optional[List[List[float]]] = None

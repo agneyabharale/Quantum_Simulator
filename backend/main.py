@@ -73,13 +73,21 @@ async def simulate(request: SimulationRequest):
         metrics = simulator.get_metrics(state)
         bloch = simulator.state_to_bloch(state)
         
+        # Helper to safely extract complex scalar for complex_to_list
+        def to_list(val):
+            # If val is a numpy array (like [[re+imj]]), flatten it to a scalar
+            if hasattr(val, 'item'):
+                return complex_to_list(val.item())
+            return complex_to_list(val)
+
         return SimulationResponse(
-            statevector=[complex_to_list(state[0]), complex_to_list(state[1])],
+            statevector=[to_list(state[0]), to_list(state[1])],
             probabilities=metrics["probabilities"],
             phases=metrics["phases"],
             bloch=BlochCoords(**bloch),
             trajectory=[BlochCoords(**p) for p in trajectory_data],
-            last_gate_matrix=matrix_to_list(last_matrix)
+            last_gate_matrix=matrix_to_list(last_matrix),
+            previous_state=[to_list(start_state_for_last[0]), to_list(start_state_for_last[1])]
         )
         
     except Exception as e:
