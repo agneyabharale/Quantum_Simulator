@@ -9,6 +9,12 @@ class BlochCoords(BaseModel):
     y: float
     z: float
 
+class StepResult(BaseModel):
+    statevector: List[List[float]]
+    bloch: BlochCoords
+    probabilities: Dict[str, float]
+    phases: Dict[str, float]
+
 class SimulationResponse(BaseModel):
     # Statevector as [[real, imag], [real, imag]]
     statevector: List[List[float]]
@@ -31,3 +37,6 @@ class SimulationResponse(BaseModel):
     
     # The statevector BEFORE the last gate was applied
     previous_state: Optional[List[List[float]]] = None
+
+    # History of every step in the circuit
+    history: List[StepResult]

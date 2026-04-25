@@ -1,38 +1,45 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useSpring, animated } from '@react-spring/three';
 import * as THREE from 'three';
 import { useCircuitStore } from '../../store/useCircuitStore';
 
 /**
  * The State Arrow represents the current qubit state |ψ⟩.
- * It animates smoothly between positions using SLERP.
+ * It animates smoothly between positions.
  */
 const StateArrow = () => {
   const meshRef = useRef();
-  const bloch = useCircuitStore((state) => state.simulation?.bloch);
-  
-  // Target position from simulation
-  const targetPos = useMemo(() => {
-    if (!bloch) return new THREE.Vector3(0, 1, 0); // Default to |0⟩
-    // Note: In Three.js, Y is typically Up, but Bloch sphere uses Z as Up (|0⟩).
-    // We map backend (x,y,z) to Three.js (x,z,y) to align with standard Bloch visuals.
-    return new THREE.Vector3(bloch.x, bloch.z, -bloch.y);
-  }, [bloch]);
+  const simulation = useCircuitStore((state) => state.simulation);
+  const currentStep = useCircuitStore((state) => state.currentStep);
 
-  // Smoothed position for the arrow head
-  const currentPos = useRef(new THREE.Vector3(0, 1, 0));
+  // Determine the target state based on step mode
+  const getTargetState = () => {
+    if (!simulation) return { x: 0, y: 0, z: 1 }; // Default to |0>
+    
+    // If in step mode, use the history
+    if (currentStep !== -1 && simulation.history && simulation.history[currentStep]) {
+      return simulation.history[currentStep].bloch;
+    }
+    
+    return simulation.bloch;
+  };
 
   useFrame((state, delta) => {
-    if (meshRef.current) {
-      // Smoothly interpolate current orientation to target orientation
-      // We use a simple lerp for the vector here, but for pure rotation 
-      // one could use quaternions if the length were constant.
-      currentPos.current.lerp(targetPos, 0.1);
-      
-      // Update lookAt to point from origin to target
-      meshRef.current.lookAt(currentPos.current);
+    if (!meshRef.current) return;
+    
+    const target = getTargetState();
+    
+    // Target position mapping: Bloch (x, y, z) -> Three (x, z, -y)
+    const targetVec = new THREE.Vector3(target.x, target.z, -target.y);
+    
+    // Smoothly interpolate the "look at" direction
+    if (!meshRef.current.userData.currentLookAt) {
+      meshRef.current.userData.currentLookAt = targetVec.clone();
     }
+    meshRef.current.userData.currentLookAt.lerp(targetVec, 0.1);
+    
+    // Arrow stays at origin, but looks at the target vector
+    meshRef.current.lookAt(meshRef.current.userData.currentLookAt);
   });
 
   return (
@@ -59,6 +66,5 @@ const StateArrow = () => {
     </group>
   );
 };
-
 
 export default StateArrow;

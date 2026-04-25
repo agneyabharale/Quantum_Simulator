@@ -4,10 +4,16 @@ import PhaseDisk from './PhaseDisk';
 
 const ProbabilityBars = () => {
   const simulation = useCircuitStore((state) => state.simulation);
+  const currentStep = useCircuitStore((state) => state.currentStep);
 
   if (!simulation) return null;
 
-  const { probabilities, phases } = simulation;
+  // Determine which data to use: History step or final simulation
+  const activeData = (currentStep !== -1 && simulation.history && simulation.history[currentStep]) 
+    ? simulation.history[currentStep] 
+    : simulation;
+
+  const { probabilities, phases } = activeData;
   const p0 = (probabilities.p0 * 100).toFixed(1);
   const p1 = (probabilities.p1 * 100).toFixed(1);
 

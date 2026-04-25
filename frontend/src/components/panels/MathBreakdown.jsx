@@ -5,6 +5,7 @@ import { InlineMath, BlockMath } from 'react-katex';
 const MathBreakdown = () => {
   const simulation = useCircuitStore((state) => state.simulation);
   const gates = useCircuitStore((state) => state.gates);
+  const currentStep = useCircuitStore((state) => state.currentStep);
 
   if (!simulation || gates.length === 0) {
     return (
@@ -14,9 +15,15 @@ const MathBreakdown = () => {
     );
   }
 
-  const statevector = simulation.statevector || simulation.state_vector;
-  const last_matrix = simulation.last_gate_matrix || simulation.last_matrix;
-  const prev_state = simulation.previous_state || [ [1,0], [0,0] ]; // Assuming backend sends previous state
+  // Determine active data based on step mode
+  const isActiveStep = currentStep !== -1 && simulation.history && simulation.history[currentStep];
+  const activeData = isActiveStep ? simulation.history[currentStep] : simulation;
+  const stepIdx = isActiveStep ? currentStep : gates.length - 1;
+  const gateName = isActiveStep ? activeData.gate : gates[gates.length - 1];
+
+  const statevector = activeData.statevector;
+  const last_matrix = activeData.matrix || simulation.last_gate_matrix;
+  const prev_state = activeData.prev_state || simulation.previous_state;
 
   const fmt = (c) => {
     if (!c) return '0';
@@ -26,14 +33,12 @@ const MathBreakdown = () => {
     return `${re.toFixed(2)}${im > 0 ? '+' : '-'}${Math.abs(im).toFixed(2)}i`;
   };
 
-  const gateName = gates[gates.length - 1];
-
   return (
     <div className="flex flex-col gap-4">
       <div className="p-3 bg-indigo-50/50 rounded-lg border border-indigo-100">
         <h4 className="text-[10px] font-bold text-indigo-900 uppercase tracking-widest mb-2 flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
-          Step {gates.length}: {gateName} Gate
+          Step {stepIdx + 1}: {gateName} Gate
         </h4>
         
         <div className="overflow-x-auto py-2">

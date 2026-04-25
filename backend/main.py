@@ -51,34 +51,51 @@ async def simulate(request: SimulationRequest):
     """
     try:
         state = simulator.get_initial_state()
-        last_matrix = simulator.I # Default to identity
-        
-        # Apply all gates except the last one (to get the start state for the last trajectory)
-        for i in range(len(request.gates) - 1):
-            state, _ = simulator.apply_gate(state, request.gates[i])
-        
-        # Capture the starting state for the last gate's trajectory
-        start_state_for_last = state.copy()
-        
-        # Apply the last gate if it exists
-        if request.gates:
-            last_gate_name = request.gates[-1]
-            state, last_matrix = simulator.apply_gate(state, last_gate_name)
-            trajectory_data = simulator.get_rotation_trajectory(start_state_for_last, last_gate_name)
-        else:
-            # If no gates, just return identity trajectory (the pole itself)
-            trajectory_data = [simulator.state_to_bloch(state)]
-
-        # Get final metrics
-        metrics = simulator.get_metrics(state)
-        bloch = simulator.state_to_bloch(state)
+        history = []
         
         # Helper to safely extract complex scalar for complex_to_list
         def to_list(val):
-            # If val is a numpy array (like [[re+imj]]), flatten it to a scalar
             if hasattr(val, 'item'):
                 return complex_to_list(val.item())
             return complex_to_list(val)
+
+        # Initial state (step -1 or step 0?)
+        # Let's say history[0] is state after 1st gate
+        
+        last_matrix = simulator.I
+        start_state_for_last = state.copy()
+        
+        for i, gate_name in enumerate(request.gates):
+            prev_state = state.copy()
+            state, matrix = simulator.apply_gate(state, gate_name)
+            
+            # Record this step
+            step_metrics = simulator.get_metrics(state)
+            step_bloch = simulator.state_to_bloch(state)
+            
+            history.append({
+                "gate": gate_name,
+                "prev_state": [to_list(prev_state[0]), to_list(prev_state[1])],
+                "statevector": [to_list(state[0]), to_list(state[1])],
+                "matrix": matrix_to_list(matrix),
+                "bloch": step_bloch,
+                "probabilities": step_metrics["probabilities"],
+                "phases": step_metrics["phases"]
+            })
+            
+            if i == len(request.gates) - 1:
+                last_matrix = matrix
+                start_state_for_last = prev_state
+
+        # Final state data
+        metrics = simulator.get_metrics(state)
+        bloch = simulator.state_to_bloch(state)
+        
+        # Trajectory for the last gate
+        if request.gates:
+            trajectory_data = simulator.get_rotation_trajectory(start_state_for_last, request.gates[-1])
+        else:
+            trajectory_data = [simulator.state_to_bloch(state)]
 
         return SimulationResponse(
             statevector=[to_list(state[0]), to_list(state[1])],
@@ -87,7 +104,8 @@ async def simulate(request: SimulationRequest):
             bloch=BlochCoords(**bloch),
             trajectory=[BlochCoords(**p) for p in trajectory_data],
             last_gate_matrix=matrix_to_list(last_matrix),
-            previous_state=[to_list(start_state_for_last[0]), to_list(start_state_for_last[1])]
+            previous_state=[to_list(start_state_for_last[0]), to_list(start_state_for_last[1])],
+            history=history
         )
         
     except Exception as e:

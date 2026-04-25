@@ -6,6 +6,7 @@ import MatrixPanel from '../panels/MatrixPanel';
 import ProbabilityBars from '../panels/ProbabilityBars';
 import MathBreakdown from '../panels/MathBreakdown';
 import { ChevronDown, ChevronRight, LayoutGrid, Rotate3d, BarChart3, Hash, Sliders, BookOpen } from 'lucide-react';
+import { useCircuitStore } from '../../store/useCircuitStore';
 
 const AccordionItem = ({ title, icon: Icon, children, isOpen, onClick }) => (
   <div className="accordion-item border-b border-gray-100">
@@ -25,6 +26,8 @@ const AccordionItem = ({ title, icon: Icon, children, isOpen, onClick }) => (
 );
 
 const Sidebar = () => {
+  const { addGate, setPreviewGate } = useCircuitStore();
+  
   // Use an object to track multiple open sections
   const [openSections, setOpenSections] = useState({
     gates: true,
@@ -55,7 +58,7 @@ const Sidebar = () => {
           isOpen={openSections.gates} 
           onClick={() => toggle('gates')}
         >
-          <GatePanel />
+          <GatePanel onAdd={addGate} onPreview={setPreviewGate} />
         </AccordionItem>
 
         <AccordionItem 

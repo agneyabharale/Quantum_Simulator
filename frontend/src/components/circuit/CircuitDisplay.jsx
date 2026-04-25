@@ -1,56 +1,92 @@
 import React from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCircuitStore } from '../../store/useCircuitStore';
 
 const CircuitDisplay = () => {
-  const gates = useCircuitStore((state) => state.gates);
+  const { gates, currentStep, nextStep, prevStep, setCurrentStep } = useCircuitStore();
+
+  const getGateColor = (gate) => {
+    if (gate.includes('Rx')) return 'bg-[#ff5252]';
+    if (gate.includes('Ry')) return 'bg-[#4caf50]';
+    if (gate.includes('Rz')) return 'bg-[#2196f3]';
+    switch (gate) {
+      case 'X': return 'bg-[#ff5252]';
+      case 'Y': return 'bg-[#4caf50]';
+      case 'Z': return 'bg-[#2196f3]';
+      case 'H': return 'bg-[#ffc107]';
+      case 'S': return 'bg-[#9c27b0]';
+      case 'T': return 'bg-[#e91e63]';
+      default: return 'bg-indigo-600';
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-3">
-      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Quantum Circuit Timeline</h3>
-      
-      <div className="relative flex items-center min-h-[60px] bg-gray-50/50 p-6 rounded-lg border border-dashed border-gray-200 overflow-x-auto">
-        {/* The Circuit Wire */}
-        <div className="absolute left-0 w-full h-[1px] bg-gray-300" />
-        
-        {/* The |0> Label */}
-        <div className="relative z-10 flex items-center justify-center w-10 h-10 rounded bg-indigo-600 shadow-md mr-6">
-          <span className="text-white font-mono text-sm">|0⟩</span>
-        </div>
-
-        {/* The Gates */}
-        <div className="flex gap-4 items-center relative z-10">
-          {gates.map((gate, index) => (
-            <div key={index} className="flex flex-col items-center animate-fade-in">
-              <div className={`w-9 h-9 rounded flex items-center justify-center font-bold text-white text-xs shadow-sm
-                              ${getGateColor(gate)}`}>
-                {gate.includes('Rx') ? 'Rx' : gate.includes('Ry') ? 'Ry' : gate.includes('Rz') ? 'Rz' : gate}
-              </div>
-              <span className="text-[8px] text-gray-400 mt-1 font-bold">{index + 1}</span>
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Quantum Circuit Timeline</h3>
+        <div className="flex items-center gap-2">
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button 
+              onClick={() => setCurrentStep(currentStep === -1 ? gates.length - 1 : -1)}
+              className={`px-3 py-1 text-[9px] font-black rounded-md transition-all ${currentStep !== -1 ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              STEP MODE
+            </button>
+          </div>
+          {currentStep !== -1 && (
+            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+              <button 
+                onClick={prevStep}
+                disabled={currentStep <= 0}
+                className="p-1 text-gray-500 hover:text-indigo-600 disabled:opacity-30 disabled:hover:text-gray-500 transition-colors"
+              >
+                <ChevronLeft size={14} />
+              </button>
+              <span className="text-[9px] font-black text-gray-400 w-8 text-center">{currentStep + 1} / {gates.length}</span>
+              <button 
+                onClick={nextStep}
+                disabled={currentStep >= gates.length - 1}
+                className="p-1 text-gray-500 hover:text-indigo-600 disabled:opacity-30 disabled:hover:text-gray-500 transition-colors"
+              >
+                <ChevronRight size={14} />
+              </button>
             </div>
-          ))}
-          
-          {gates.length === 0 && (
-            <span className="text-gray-300 italic text-xs ml-2 uppercase tracking-tight">Qubit is in ground state</span>
           )}
         </div>
       </div>
+      
+      <div className="h-24 flex items-center gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
+        {gates.length === 0 ? (
+          <div className="flex-1 flex items-center justify-center border-2 border-dashed border-gray-100 rounded-xl">
+            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest italic">Circuit is empty. Add a gate from the sidebar.</span>
+          </div>
+        ) : (
+          gates.map((gate, idx) => (
+            <div 
+              key={idx} 
+              className={`relative flex flex-col items-center gap-2 group cursor-pointer transition-all ${currentStep === idx ? 'scale-110' : ''}`}
+              onClick={() => setCurrentStep(idx)}
+            >
+              <div 
+                className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-white shadow-lg transition-all
+                  ${getGateColor(gate)}
+                  ${currentStep === idx ? 'ring-4 ring-indigo-200 scale-105' : 'group-hover:scale-105'}
+                `}
+              >
+                {gate.includes('Rx') ? 'Rx' : gate.includes('Ry') ? 'Ry' : gate.includes('Rz') ? 'Rz' : gate}
+              </div>
+              <span className={`text-[8px] font-black tracking-widest ${currentStep === idx ? 'text-indigo-600' : 'text-gray-300'}`}>{idx + 1}</span>
+              
+              {/* Connector line */}
+              {idx < gates.length - 1 && (
+                <div className="absolute top-5 -right-3 w-3 h-[1px] bg-gray-200" />
+              )}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
-};
-
-const getGateColor = (gate) => {
-  if (gate.includes('Rx')) return 'bg-[#ff5252]';
-  if (gate.includes('Ry')) return 'bg-[#4caf50]';
-  if (gate.includes('Rz')) return 'bg-[#2196f3]';
-  switch (gate) {
-    case 'X': return 'bg-[#ff5252]';
-    case 'Y': return 'bg-[#4caf50]';
-    case 'Z': return 'bg-[#2196f3]';
-    case 'H': return 'bg-[#ffc107]';
-    case 'S': return 'bg-[#9c27b0]';
-    case 'T': return 'bg-[#e91e63]';
-    default: return 'bg-gray-400';
-  }
 };
 
 export default CircuitDisplay;

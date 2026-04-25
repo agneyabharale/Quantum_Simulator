@@ -15,21 +15,65 @@ export const useCircuitStore = create((set, get) => ({
   // State: UI management
   isLoading: false,
   error: null,
+
+  // State: For Step-through mode
+  currentStep: -1, 
+
+  // State: For Ghost Arrow preview
+  previewGate: null,
+  previewSimulation: null,
   
   // --- Actions ---
+  
+  setPreviewGate: async (gateName) => {
+    if (!gateName) {
+      set({ previewGate: null, previewSimulation: null });
+      return;
+    }
+    
+    set({ previewGate: gateName });
+    const { gates } = get();
+    try {
+      const result = await simulateCircuit([...gates, gateName]);
+      // Race condition fix: only set if we are still hovering over THIS gate
+      if (get().previewGate === gateName) {
+        set({ previewSimulation: result });
+      }
+    } catch (err) {
+      console.error("Preview failed", err);
+    }
+  },
   
   /**
    * Adds a new gate to the circuit and triggers a simulation.
    */
   addGate: async (gateName) => {
     const newGates = [...get().gates, gateName];
-    set({ gates: newGates, isLoading: true, error: null });
+    set({ gates: newGates, isLoading: true, error: null, currentStep: -1 });
     
     try {
       const result = await simulateCircuit(newGates);
       set({ simulation: result, isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });
+    }
+  },
+
+  setCurrentStep: (step) => {
+    set({ currentStep: step });
+  },
+
+  nextStep: () => {
+    const { gates, currentStep } = get();
+    if (currentStep < gates.length - 1) {
+      set({ currentStep: currentStep + 1 });
+    }
+  },
+
+  prevStep: () => {
+    const { currentStep } = get();
+    if (currentStep > -1) {
+      set({ currentStep: currentStep - 1 });
     }
   },
   
