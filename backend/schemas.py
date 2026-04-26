@@ -10,10 +10,14 @@ class BlochCoords(BaseModel):
     z: float
 
 class StepResult(BaseModel):
+    gate: str
     statevector: List[List[float]]
     bloch: BlochCoords
     probabilities: Dict[str, float]
     phases: Dict[str, float]
+    trajectory: List[BlochCoords]
+    matrix: List[List[List[float]]]
+    prev_state: List[List[float]]
 
 class SimulationResponse(BaseModel):
     # Statevector as [[real, imag], [real, imag]]

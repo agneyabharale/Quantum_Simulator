@@ -94,15 +94,13 @@ function App() {
                   <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
                   
                   <Suspense fallback={null}>
-                    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-                      <group scale={1.5}>
-                        <BlochSphere />
-                        <SphereAxes />
-                        <StateArrow />
-                        <GhostArrow />
-                        <PhosphorTrail />
-                      </group>
-                    </Float>
+                    <group scale={1.5}>
+                      <BlochSphere />
+                      <SphereAxes />
+                      <StateArrow />
+                      <GhostArrow />
+                      <PhosphorTrail />
+                    </group>
                     <ContactShadows position={[0, -2, 0]} opacity={0.1} scale={10} blur={2.4} far={4.5} />
                     <Environment preset="city" />
                   </Suspense>

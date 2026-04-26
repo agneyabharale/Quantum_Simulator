@@ -19,10 +19,14 @@ const GhostArrow = () => {
     if (!meshRef.current.userData.currentLookAt) {
       meshRef.current.userData.currentLookAt = targetVec.clone();
     }
-    meshRef.current.userData.currentLookAt.lerp(targetVec, 0.2);
+    meshRef.current.userData.currentLookAt.lerp(targetVec, 0.15);
     
-    // Arrow stays at origin, but looks at the target vector
-    meshRef.current.lookAt(meshRef.current.userData.currentLookAt);
+    // Convert to world space
+    const worldTarget = meshRef.current.parent 
+      ? meshRef.current.parent.localToWorld(meshRef.current.userData.currentLookAt.clone())
+      : meshRef.current.userData.currentLookAt;
+
+    meshRef.current.lookAt(worldTarget);
   });
 
   if (!previewSimulation) return null;

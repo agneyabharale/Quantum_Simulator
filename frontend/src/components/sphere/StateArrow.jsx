@@ -38,8 +38,13 @@ const StateArrow = () => {
     }
     meshRef.current.userData.currentLookAt.lerp(targetVec, 0.1);
     
-    // Arrow stays at origin, but looks at the target vector
-    meshRef.current.lookAt(meshRef.current.userData.currentLookAt);
+    // Convert local target to world space for the lookAt call
+    // This is CRITICAL because Three.js .lookAt() expects a WORLD space position.
+    const worldTarget = meshRef.current.parent 
+      ? meshRef.current.parent.localToWorld(meshRef.current.userData.currentLookAt.clone())
+      : meshRef.current.userData.currentLookAt;
+
+    meshRef.current.lookAt(worldTarget);
   });
 
   return (

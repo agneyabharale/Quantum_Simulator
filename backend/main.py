@@ -73,6 +73,9 @@ async def simulate(request: SimulationRequest):
             step_metrics = simulator.get_metrics(state)
             step_bloch = simulator.state_to_bloch(state)
             
+            # Calculate trajectory for THIS gate
+            step_trajectory = simulator.get_rotation_trajectory(prev_state, gate_name)
+            
             history.append({
                 "gate": gate_name,
                 "prev_state": [to_list(prev_state[0]), to_list(prev_state[1])],
@@ -80,7 +83,8 @@ async def simulate(request: SimulationRequest):
                 "matrix": matrix_to_list(matrix),
                 "bloch": step_bloch,
                 "probabilities": step_metrics["probabilities"],
-                "phases": step_metrics["phases"]
+                "phases": step_metrics["phases"],
+                "trajectory": [BlochCoords(**p) for p in step_trajectory]
             })
             
             if i == len(request.gates) - 1:
