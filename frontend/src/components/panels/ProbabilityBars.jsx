@@ -91,8 +91,8 @@ const ProbabilityBars = () => {
   const phase1 = Math.atan2(z1[1], z1[0]);
   const phiVal = (((phase1 - phase0) * 180 / Math.PI + 360) % 360);
 
-  const incrementTheta = (dir) => setStateByAngles(Math.min(180, Math.max(0, thetaVal + dir * 0.5)), phiVal);
-  const incrementPhi = (dir) => setStateByAngles(thetaVal, (phiVal + dir * 0.5 + 360) % 360);
+  const incrementTheta = (dir) => setStateByAngles(Math.min(180, Math.max(0, thetaVal + dir * 1.0)), phiVal);
+  const incrementPhi = (dir) => setStateByAngles(thetaVal, (phiVal + dir * 1.0 + 360) % 360);
 
   return (
     <div className="flex flex-col gap-6 pb-10">

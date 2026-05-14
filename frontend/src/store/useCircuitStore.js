@@ -119,7 +119,7 @@ export const useCircuitStore = create((set, get) => ({
    */
   setStateByAngles: async (thetaDeg, phiDeg) => {
     const { gates, initialAngles } = get();
-    const manualGate = `MANUAL(${Math.round(thetaDeg)},${Math.round(phiDeg)})`;
+    const manualGate = `MANUAL(${thetaDeg},${phiDeg})`;
     
     let newGates = [...gates];
     // If the last gate was already a manual adjustment, update it instead of adding a new one
