@@ -3,6 +3,7 @@ from typing import List, Dict, Any, Optional
 
 class SimulationRequest(BaseModel):
     gates: List[str]
+    initial_angles: Optional[Dict[str, float]] = None # {"theta": float, "phi": float}
 
 class BlochCoords(BaseModel):
     x: float
@@ -40,7 +41,7 @@ class SimulationResponse(BaseModel):
     last_gate_matrix: List[List[List[float]]]
     
     # The statevector BEFORE the last gate was applied
-    previous_state: Optional[List[List[float]]] = None
+    prev_state: Optional[List[List[float]]] = None
 
     # History of every step in the circuit
     history: List[StepResult]

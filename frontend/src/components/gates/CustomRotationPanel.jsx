@@ -17,15 +17,15 @@ const CustomRotationPanel = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {/* Axis Selection */}
-      <div className="flex bg-gray-100 p-1 rounded-lg">
+      <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
         {['Rx', 'Ry', 'Rz'].map((a) => (
           <button
             key={a}
             onClick={() => setAxis(a)}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all ${
-              axis === a ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-500 hover:text-gray-700'
+            className={`flex-1 py-2 text-[10px] font-black rounded-lg transition-all uppercase tracking-widest ${
+              axis === a ? 'bg-cyan-500 shadow-lg text-[#002021]' : 'text-gray-500 hover:text-white'
             }`}
           >
             {a}
@@ -34,10 +34,10 @@ const CustomRotationPanel = () => {
       </div>
 
       {/* Angle Slider */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <div className="flex justify-between items-center">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Angle (θ)</span>
-          <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Rotation (θ)</span>
+          <span className="text-[10px] font-black text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-md border border-cyan-500/20">
             {angle}°
           </span>
         </div>
@@ -48,9 +48,9 @@ const CustomRotationPanel = () => {
           step="1"
           value={angle}
           onChange={(e) => setAngle(parseInt(e.target.value))}
-          className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+          className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-400"
         />
-        <div className="flex justify-between text-[8px] text-gray-400 font-bold px-1">
+        <div className="flex justify-between text-[8px] text-gray-600 font-black px-1 uppercase tracking-widest">
           <span>0°</span>
           <span>180°</span>
           <span>360°</span>
@@ -61,19 +61,19 @@ const CustomRotationPanel = () => {
       <button
         onClick={handleApply}
         disabled={isLoading}
-        className="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-indigo-200"
+        className="w-full py-3.5 bg-white/5 text-white border border-white/10 rounded-xl font-black text-[10px] flex items-center justify-center gap-2 hover:bg-white/10 transition-all active:scale-95 disabled:opacity-50 shadow-2xl uppercase tracking-[0.2em]"
       >
-        <PlusCircle size={14} />
-        APPLY ROTATION
+        <PlusCircle size={14} className="text-cyan-400" />
+        Commit Rotation
       </button>
 
       {/* Quick Presets */}
-      <div className="grid grid-cols-4 gap-1.5 mt-1">
+      <div className="grid grid-cols-4 gap-2">
         {[45, 90, 180, 270].map((p) => (
           <button
             key={p}
             onClick={() => setAngle(p)}
-            className="py-1 text-[9px] font-bold text-gray-500 bg-gray-50 border border-gray-100 rounded hover:bg-gray-100 transition-colors"
+            className="py-1.5 text-[9px] font-black text-gray-500 bg-white/2 border border-white/5 rounded-lg hover:bg-white/5 hover:text-cyan-400 transition-all uppercase"
           >
             {p}°
           </button>

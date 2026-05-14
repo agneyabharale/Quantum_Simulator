@@ -8,12 +8,12 @@ const BlochSphere = () => {
   
   return (
     <group>
-      {/* The main faint sphere outline - SIGNIFICANTLY MORE VISIBLE */}
+      {/* The main faint sphere outline */}
       <Sphere args={[1, 32, 32]}>
         <meshBasicMaterial
           transparent
-          opacity={0.1}
-          color="#000000"
+          opacity={0.15}
+          color="#ffffff"
           wireframe
         />
       </Sphere>
@@ -22,18 +22,18 @@ const BlochSphere = () => {
       <Sphere args={[0.99, 32, 32]}>
         <meshBasicMaterial
           transparent
-          opacity={0.03}
-          color="#f0f0f0"
+          opacity={0.05}
+          color="#ffffff"
         />
       </Sphere>
 
       {/* Equator Circle */}
       <Line
         points={new THREE.EllipseCurve(0, 0, 1, 1, 0, 2 * Math.PI, false, 0).getPoints(100).map(p => [p.x, 0, p.y])}
-        color="#333333"
-        lineWidth={1.5}
+        color="#00f5ff"
+        lineWidth={2}
         transparent
-        opacity={0.3}
+        opacity={0.4}
       />
 
       {/* Longitudinal Circles (Meridians) */}
@@ -45,27 +45,27 @@ const BlochSphere = () => {
             p.y,
             p.x * Math.sin(angle)
           ])}
-          color="#333333"
-          lineWidth={0.8}
+          color="#ffffff"
+          lineWidth={1}
           transparent
-          opacity={0.15}
+          opacity={0.2}
         />
       ))}
 
       {/* Highlighted X-Z and Y-Z planes */}
       <Line
         points={new THREE.EllipseCurve(0, 0, 1, 1, 0, 2 * Math.PI, false, 0).getPoints(100).map(p => [p.x, p.y, 0])}
-        color="#000000"
-        lineWidth={2}
+        color="#ffffff"
+        lineWidth={1.5}
         transparent
-        opacity={0.4}
+        opacity={0.3}
       />
       <Line
         points={new THREE.EllipseCurve(0, 0, 1, 1, 0, 2 * Math.PI, false, 0).getPoints(100).map(p => [0, p.y, p.x])}
-        color="#000000"
-        lineWidth={2}
+        color="#ffffff"
+        lineWidth={1.5}
         transparent
-        opacity={0.4}
+        opacity={0.3}
       />
     </group>
   );

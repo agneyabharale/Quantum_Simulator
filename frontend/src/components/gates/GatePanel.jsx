@@ -18,12 +18,12 @@ const GatePanel = ({ onAdd, onPreview }) => {
           onClick={() => onAdd(gate.id)}
           onMouseEnter={() => onPreview(gate.id)}
           onMouseLeave={() => onPreview(null)}
-          className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group"
+          className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all group"
         >
-          <div className={`w-10 h-10 ${gate.color} rounded-xl shadow-md flex items-center justify-center font-black text-white group-hover:scale-110 transition-transform`}>
+          <div className={`w-10 h-10 ${gate.color} rounded-xl shadow-lg flex items-center justify-center font-black text-white group-hover:scale-110 transition-transform`}>
             {gate.name}
           </div>
-          <span className="text-[9px] font-bold text-gray-500 uppercase tracking-tighter">{gate.desc}</span>
+          <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{gate.desc}</span>
         </button>
       ))}
     </div>

@@ -21,15 +21,15 @@ const RotationPanel = () => {
           key={rot.name}
           onClick={() => addGate(rot.name)}
           disabled={isLoading}
-          className="flex flex-col items-center justify-center p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+          className="flex flex-col items-center justify-center p-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/10 transition-all shadow-xl active:scale-95 disabled:opacity-50 group"
         >
           <div 
-            className="px-2 py-1 rounded text-white text-xs font-bold mb-1"
+            className="px-3 py-1 rounded-md text-white text-[10px] font-black mb-2 shadow-lg group-hover:scale-105 transition-transform"
             style={{ backgroundColor: rot.color }}
           >
             {rot.label}
           </div>
-          <span className="text-[10px] text-gray-400 font-mono italic">{rot.name}</span>
+          <span className="text-[9px] text-gray-500 font-black uppercase tracking-widest">{rot.name}</span>
         </button>
       ))}
     </div>

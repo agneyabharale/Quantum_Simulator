@@ -13,9 +13,9 @@ const PhaseDisk = ({ phase, size = 40, color = "#3f51b5" }) => {
           cx={size/2} 
           cy={size/2} 
           r={size/2 - 2} 
-          fill="white" 
-          stroke="#e5e7eb" 
-          strokeWidth="1" 
+          fill="rgba(255, 255, 255, 0.03)" 
+          stroke="rgba(255, 255, 255, 0.1)" 
+          strokeWidth="1.5" 
         />
         
         {/* Phase Indicator Line */}

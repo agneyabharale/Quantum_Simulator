@@ -22,24 +22,28 @@ const MatrixPanel = () => {
   const last_matrix = simulation.last_gate_matrix || simulation.last_matrix;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">State Vector |ψ⟩</span>
-        <div className="p-3 bg-gray-50 rounded border border-gray-100 flex justify-center">
-          <InlineMath math={`\\begin{pmatrix} ${fmt(statevector[0])} \\\\ ${fmt(statevector[1])} \\end{pmatrix}`} />
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-3">
+        <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">State Vector |ψ⟩</span>
+        <div className="p-5 bg-white/2 rounded-2xl border border-white/5 flex justify-center shadow-2xl">
+          <div className="text-white/80 invert-[0.1]">
+            <InlineMath math={`\\begin{pmatrix} ${fmt(statevector[0])} \\\\ ${fmt(statevector[1])} \\end{pmatrix}`} />
+          </div>
         </div>
       </div>
 
       {last_matrix && (
-        <div className="flex flex-col gap-2">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Matrix U</span>
-          <div className="p-3 bg-gray-50 rounded border border-gray-100 flex justify-center">
-            <InlineMath math={`
-              \\begin{pmatrix} 
-                ${fmt(last_matrix[0][0])} & ${fmt(last_matrix[0][1])} \\\\
-                ${fmt(last_matrix[1][0])} & ${fmt(last_matrix[1][1])}
-              \\end{pmatrix}
-            `} />
+        <div className="flex flex-col gap-3">
+          <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Operator Matrix (U)</span>
+          <div className="p-5 bg-white/2 rounded-2xl border border-white/5 flex justify-center shadow-2xl">
+            <div className="text-white/80 invert-[0.1]">
+              <InlineMath math={`
+                \\begin{pmatrix} 
+                  ${fmt(last_matrix[0][0])} & ${fmt(last_matrix[0][1])} \\\\
+                  ${fmt(last_matrix[1][0])} & ${fmt(last_matrix[1][1])}
+                \\end{pmatrix}
+              `} />
+            </div>
           </div>
         </div>
       )}

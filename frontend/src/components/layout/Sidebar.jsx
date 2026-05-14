@@ -9,16 +9,16 @@ import { ChevronDown, ChevronRight, LayoutGrid, Rotate3d, BarChart3, Hash, Slide
 import { useCircuitStore } from '../../store/useCircuitStore';
 
 const AccordionItem = ({ title, icon: Icon, children, isOpen, onClick }) => (
-  <div className="accordion-item border-b border-gray-100">
-    <div className="accordion-header px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors select-none" onClick={onClick}>
+  <div className="accordion-item">
+    <div className="accordion-header" onClick={onClick}>
       <div className="flex items-center gap-3">
-        <Icon size={18} className={`${isOpen ? 'text-indigo-600' : 'text-gray-400'}`} />
-        <span className={`text-[11px] font-bold uppercase tracking-wider ${isOpen ? 'text-indigo-900' : 'text-gray-500'}`}>{title}</span>
+        <Icon size={16} className={`${isOpen ? 'text-cyan-400' : 'text-gray-500'}`} />
+        <span className={`${isOpen ? 'text-white' : 'text-gray-500'}`}>{title}</span>
       </div>
-      {isOpen ? <ChevronDown size={14} className="text-gray-400" /> : <ChevronRight size={14} className="text-gray-400" />}
+      {isOpen ? <ChevronDown size={14} className="text-gray-500" /> : <ChevronRight size={14} className="text-gray-500" />}
     </div>
     {isOpen && (
-      <div className="accordion-content px-5 pb-5 animate-fade-in bg-white">
+      <div className="accordion-content animate-fade-in">
         {children}
       </div>
     )}
@@ -28,7 +28,6 @@ const AccordionItem = ({ title, icon: Icon, children, isOpen, onClick }) => (
 const Sidebar = () => {
   const { addGate, setPreviewGate } = useCircuitStore();
   
-  // Use an object to track multiple open sections
   const [openSections, setOpenSections] = useState({
     gates: true,
     rotations: false,
@@ -46,9 +45,9 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white shadow-xl">
-      <div className="p-5 border-b border-gray-100 bg-gray-50/50">
-        <h2 className="text-xs font-black text-gray-900 uppercase tracking-widest">Control Center</h2>
+    <div className="flex flex-col h-full bg-[#0e1322]">
+      <div className="p-6 border-b border-white/5 bg-white/5 backdrop-blur-md">
+        <h2 className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em]">Control Center</h2>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -107,13 +106,13 @@ const Sidebar = () => {
         </AccordionItem>
       </div>
       
-      <div className="p-6 bg-gray-50 border-t border-gray-100">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-          <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Simulator Active</h4>
+      <div className="p-8 bg-white/2 border-t border-white/5">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_#00f5ff]" />
+          <h4 className="text-[9px] font-black text-white uppercase tracking-widest opacity-60">System Online</h4>
         </div>
         <p className="text-[11px] text-gray-500 leading-relaxed font-medium">
-          Apply arbitrary rotations around any axis to explore the full Hilbert space of the qubit.
+          Universal gate set processed with zero floating-point drift. Apply transformations to map the Hilbert space.
         </p>
       </div>
     </div>

@@ -120,6 +120,49 @@ class QuantumCore:
         """
         Calculates a smooth trajectory between the start and end state for a gate.
         """
+        if gate_name.startswith("MANUAL("):
+            # For manual state sets, we provide a direct linear path in Bloch space
+            # First, parse the target angles
+            params = gate_name.replace("MANUAL(", "").replace(")", "").split(",")
+            theta = np.deg2rad(float(params[0]))
+            phi = np.deg2rad(float(params[1]))
+            
+            end_state = np.array([
+                [np.cos(theta/2)],
+                [np.exp(1j*phi) * np.sin(theta/2)]
+            ], dtype=complex)
+            
+            start_bloch = self.state_to_bloch(start_state)
+            
+            # Extract start theta/phi from start_state
+            s = start_state.flatten()
+            start_theta = 2 * np.arccos(np.clip(np.abs(s[0]), 0, 1))
+            start_phi = np.angle(s[1]) - np.angle(s[0])
+            
+            # Shortest path for phi
+            diff_phi = phi - start_phi
+            while diff_phi > np.pi: diff_phi -= 2 * np.pi
+            while diff_phi < -np.pi: diff_phi += 2 * np.pi
+            
+            trajectory = []
+            for i in range(steps + 1):
+                t = i / steps
+                # Interpolate angles
+                curr_theta = start_theta * (1 - t) + theta * t
+                curr_phi = start_phi + diff_phi * t
+                
+                # Convert back to Cartesian
+                x = np.sin(curr_theta) * np.cos(curr_phi)
+                y = np.sin(curr_theta) * np.sin(curr_phi)
+                z = np.cos(curr_theta)
+                
+                trajectory.append({
+                    "x": float(np.round(x, 10)),
+                    "y": float(np.round(y, 10)),
+                    "z": float(np.round(z, 10))
+                })
+            return trajectory
+
         matrix = self.get_gate_matrix(gate_name)
         
         # Eigendecomposition: U = V * D * V⁻¹
