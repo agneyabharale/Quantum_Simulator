@@ -2,7 +2,7 @@ import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCircuitStore } from '../../store/useCircuitStore';
 
-const CircuitDisplay = () => {
+const CircuitDisplay = ({ zoomScale = 1 }) => {
   const { gates, currentStep, nextStep, prevStep, setCurrentStep } = useCircuitStore();
 
   const getGateColor = (gate) => {
@@ -22,70 +22,66 @@ const CircuitDisplay = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-[9px] font-black text-white/30 uppercase tracking-[0.3em]">Circuit Timeline</h3>
-        <div className="flex items-center gap-2">
-          <div className="flex bg-white/5 rounded-md p-0.5 border border-white/5">
-            <button 
-              onClick={() => setCurrentStep(currentStep === -1 ? gates.length - 1 : -1)}
-              className={`px-3 py-0.5 text-[8px] font-black rounded transition-all uppercase tracking-widest ${currentStep !== -1 ? 'bg-cyan-500 text-[#002021] shadow-lg' : 'text-gray-500 hover:text-white'}`}
-            >
-              STEP MODE
-            </button>
-          </div>
-          {currentStep !== -1 && (
-            <div className="flex items-center gap-1 bg-white/5 rounded-md p-0.5 border border-white/5">
-              <button 
-                onClick={prevStep}
-                disabled={currentStep <= 0}
-                className="p-1 text-gray-400 hover:text-cyan-400 disabled:opacity-10 transition-colors"
-              >
-                <ChevronLeft size={12} />
-              </button>
-              <span className="text-[9px] font-black text-white w-8 text-center tracking-tighter opacity-60">{currentStep + 1}/{gates.length}</span>
-              <button 
-                onClick={nextStep}
-                disabled={currentStep >= gates.length - 1}
-                className="p-1 text-gray-400 hover:text-cyan-400 disabled:opacity-10 transition-colors"
-              >
-                <ChevronRight size={12} />
-              </button>
-            </div>
-          )}
+    <div 
+      style={{
+        height: `${80 * zoomScale}px`,
+        gap: `${20 * zoomScale}px`,
+        paddingLeft: `${16 * zoomScale}px`,
+        paddingRight: `${16 * zoomScale}px`,
+      }}
+      className="flex items-center overflow-x-auto overflow-y-hidden pb-1 scrollbar-hide w-full"
+    >
+      {gates.length === 0 ? (
+        <div className="flex-1 h-full flex items-center justify-center border border-dashed border-white/5 rounded-xl bg-white/2">
+          <span 
+            style={{ fontSize: `${13 * zoomScale}px` }}
+            className="font-black text-gray-500 uppercase tracking-[0.4em]"
+          >
+            Empty Stack
+          </span>
         </div>
-      </div>
-      
-      <div className="h-16 flex items-center gap-4 overflow-x-auto px-4 pb-1 scrollbar-hide">
-        {gates.length === 0 ? (
-          <div className="flex-1 h-full flex items-center justify-center border border-dashed border-white/5 rounded-xl bg-white/2">
-            <span className="text-[9px] font-black text-gray-700 uppercase tracking-[0.4em]">Empty Stack</span>
-          </div>
-        ) : (
-          gates.map((gate, idx) => (
+      ) : (
+        gates.map((gate, idx) => (
+          <div 
+            key={idx} 
+            style={{ gap: `${4 * zoomScale}px` }}
+            className={`relative flex flex-col items-center group cursor-pointer transition-all ${currentStep === idx ? 'scale-105' : ''}`}
+            onClick={() => setCurrentStep(idx)}
+          >
             <div 
-              key={idx} 
-              className={`relative flex flex-col items-center gap-1.5 group cursor-pointer transition-all ${currentStep === idx ? 'scale-105' : ''}`}
-              onClick={() => setCurrentStep(idx)}
+              style={{
+                width: `${46 * zoomScale}px`,
+                height: `${46 * zoomScale}px`,
+                fontSize: `${12 * zoomScale}px`,
+              }}
+              className={`rounded-xl flex items-center justify-center font-black text-white shadow-xl transition-all
+                ${getGateColor(gate)}
+                ${currentStep === idx ? 'ring-2 ring-cyan-400/50 scale-105 shadow-[0_0_15px_rgba(6,182,212,0.3)]' : 'group-hover:scale-105'}
+              `}
             >
-              <div 
-                className={`w-9 h-9 rounded-lg flex items-center justify-center font-black text-white shadow-xl transition-all text-[10px]
-                  ${getGateColor(gate)}
-                  ${currentStep === idx ? 'ring-2 ring-cyan-400/50 scale-105' : 'group-hover:scale-105 opacity-70 group-hover:opacity-100'}
-                `}
-              >
-                {gate.startsWith('MANUAL') ? 'SET' : gate.includes('Rx') ? 'Rx' : gate.includes('Ry') ? 'Ry' : gate.includes('Rz') ? 'Rz' : gate}
-              </div>
-              <span className={`text-[7px] font-black tracking-widest ${currentStep === idx ? 'text-cyan-400' : 'text-gray-600'}`}>S{idx + 1}</span>
-              
-              {/* Connector line */}
-              {idx < gates.length - 1 && (
-                <div className="absolute top-4.5 -right-3 w-3 h-[1px] bg-white/5" />
-              )}
+              {gate.startsWith('MANUAL') ? 'SET' : gate.includes('Rx') ? 'Rx' : gate.includes('Ry') ? 'Ry' : gate.includes('Rz') ? 'Rz' : gate}
             </div>
-          ))
-        )}
-      </div>
+            <span 
+              style={{ fontSize: `${10 * zoomScale}px` }}
+              className={`font-black tracking-widest ${currentStep === idx ? 'text-cyan-400' : 'text-gray-500/80'}`}
+            >
+              S{idx + 1}
+            </span>
+            
+            {/* Connector line */}
+            {idx < gates.length - 1 && (
+              <div 
+                style={{
+                  top: `${23 * zoomScale}px`,
+                  right: `-${16 * zoomScale}px`,
+                  width: `${16 * zoomScale}px`,
+                }}
+                className="absolute h-[1px] bg-white/10" 
+              />
+            )}
+          </div>
+        ))
+      )}
     </div>
   );
 };
