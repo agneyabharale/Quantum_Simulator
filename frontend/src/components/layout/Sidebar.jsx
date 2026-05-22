@@ -109,9 +109,9 @@ const Sidebar = () => {
       <div className="p-8 bg-white/2 border-t border-white/5">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_#00f5ff]" />
-          <h4 className="text-[9px] font-black text-white uppercase tracking-widest opacity-60">System Online</h4>
+          <h4 className="text-sm font-black text-white uppercase tracking-widest opacity-70">System Online</h4>
         </div>
-        <p className="text-[11px] text-gray-500 leading-relaxed font-medium">
+        <p className="text-sm text-gray-400 leading-relaxed font-medium">
           Universal gate set processed with zero floating-point drift. Apply transformations to map the Hilbert space.
         </p>
       </div>

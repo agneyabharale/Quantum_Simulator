@@ -15,7 +15,8 @@ const SphereAxes = () => {
         transparent 
         opacity={0.3} 
       />
-      <Text position={[labelDist, 0, 0]} fontSize={0.08} color="#ffffff" opacity={0.6}>x</Text>
+      <Text position={[labelDist, 0, 0]} fontSize={0.12} color="#ffffff" fontStyle="black">|+⟩</Text>
+      <Text position={[-labelDist, 0, 0]} fontSize={0.12} color="#ffffff" fontStyle="black">|-⟩</Text>
 
       {/* Y Axis */}
       <Line 
@@ -25,7 +26,8 @@ const SphereAxes = () => {
         transparent 
         opacity={0.3} 
       />
-      <Text position={[0, 0, labelDist]} fontSize={0.08} color="#ffffff" opacity={0.6}>y</Text>
+      <Text position={[0, 0, -labelDist]} fontSize={0.12} color="#ffffff" fontStyle="black">|i⟩</Text>
+      <Text position={[0, 0, labelDist]} fontSize={0.12} color="#ffffff" fontStyle="black">|-i⟩</Text>
 
       {/* Z Axis */}
       <Line 

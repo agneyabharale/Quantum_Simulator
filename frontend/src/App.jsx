@@ -39,20 +39,20 @@ function App() {
           </div>
           <h1 className="text-lg font-black text-white tracking-tighter uppercase">QUBIT_SIM</h1>
         </div>
-        <div className="flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.2em]">
+        <div className="flex items-center gap-8 font-black uppercase tracking-[0.2em]">
           <button 
             onClick={() => setCurrentView('about')}
-            className={`transition-all pb-1 border-b-2 ${currentView === 'about' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-gray-400 hover:text-white'}`}
+            className={`transition-all ${currentView === 'about' ? 'text-sm text-cyan-400' : 'text-xs text-gray-400 hover:text-white'}`}
           >
             ABOUT
           </button>
           <button 
             onClick={() => setCurrentView('simulator')}
-            className={`transition-all pb-1 border-b-2 ${currentView === 'simulator' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-gray-400 hover:text-white'}`}
+            className={`transition-all ${currentView === 'simulator' ? 'text-sm text-cyan-400' : 'text-xs text-gray-400 hover:text-white'}`}
           >
             SIMULATOR
           </button>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-all">
+          <a href="https://github.com/agneyabharale/Quantum_Simulator" target="_blank" rel="noopener noreferrer" id="header-github-link" className="text-gray-400 hover:text-white transition-all">
             <Github size={16} />
           </a>
         </div>
@@ -123,9 +123,9 @@ function App() {
               {/* Footer Branding */}
               <div className="flex justify-between items-center text-[9px] text-gray-500 uppercase tracking-[0.3em] font-black px-2">
                 <div className="flex gap-8">
-                  <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors cursor-pointer">
+                  <a href="https://github.com/agneyabharale/Quantum_Simulator" target="_blank" rel="noopener noreferrer" id="simulator-github-link" className="flex items-center gap-2 hover:text-cyan-400 transition-colors">
                     <Github size={12} /> git_repository
-                  </span>
+                  </a>
                   <span className="flex items-center gap-2 opacity-50"><Info size={12} /> engine_v1.2_stable</span>
                 </div>
                 <div className="flex items-center gap-2">

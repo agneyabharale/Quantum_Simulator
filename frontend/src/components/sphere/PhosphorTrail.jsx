@@ -33,9 +33,9 @@ const PhosphorTrail = () => {
         key: `trail-${idx}`,
         curve,
         opacity,
-        // Latest step is hot pink, history is cool indigo
-        color: isLatest ? "#ff00ff" : "#818cf8",
-        thickness: isLatest ? 0.015 : 0.008 // Increased thickness
+        // Latest step is bright orange, history fades to violet
+        color: isLatest ? "#f97316" : "#a855f7",
+        thickness: isLatest ? 0.02 : 0.015
       };
     }).filter(Boolean);
   }, [simulation, currentStep]);
