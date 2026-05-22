@@ -141,12 +141,66 @@ export const useCircuitStore = create((set, get) => ({
 
   /**
    * Initial fetch to set the starting state.
+   * Checks for a shared state in the URL query parameters (both short and old formats).
    */
   initialize: async () => {
     if (get().simulation) return;
     set({ isLoading: true });
+
+    // Check URL parameters for a shared state
+    const params = new URLSearchParams(window.location.search);
+    const sharedState = params.get('state');
+    
+    let initialGates = [];
+    let initialAngles = null;
+    
+    if (sharedState) {
+      // Fallback for old base64-encoded JSON format
+      try {
+        const decoded = JSON.parse(decodeURIComponent(atob(sharedState)));
+        if (Array.isArray(decoded.gates)) {
+          initialGates = decoded.gates;
+        }
+        if (decoded.initialAngles) {
+          initialAngles = decoded.initialAngles;
+        }
+      } catch (err) {
+        console.error("Failed to decode shared state from URL:", err);
+      }
+    } else {
+      // New ultra-short human-readable format: ?gates=H,X,S&init=theta,phi
+      const gatesParam = params.get('gates');
+      const initParam = params.get('init');
+      
+      if (gatesParam) {
+        try {
+          initialGates = gatesParam.split(',').map(g => decodeURIComponent(g));
+        } catch (err) {
+          console.error("Failed to decode gates parameter:", err);
+        }
+      }
+      
+      if (initParam) {
+        try {
+          const parts = initParam.split(',');
+          if (parts.length === 2) {
+            initialAngles = {
+              theta: parseFloat(parts[0]),
+              phi: parseFloat(parts[1])
+            };
+          }
+        } catch (err) {
+          console.error("Failed to decode init parameter:", err);
+        }
+      }
+    }
+
+    if (initialGates.length > 0 || initialAngles) {
+      set({ gates: initialGates, initialAngles: initialAngles });
+    }
+
     try {
-      const result = await simulateCircuit([]);
+      const result = await simulateCircuit(initialGates, initialAngles);
       set({ simulation: result, isLoading: false });
     } catch (err) {
       set({ error: err.message, isLoading: false });

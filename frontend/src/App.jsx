@@ -12,14 +12,47 @@ import PhosphorTrail from './components/sphere/PhosphorTrail';
 import Sidebar from './components/layout/Sidebar';
 import CircuitDisplay from './components/circuit/CircuitDisplay';
 
-import { Github, Info, Cpu, RotateCcw, Undo2 } from 'lucide-react';
+import { Github, Info, Cpu, RotateCcw, Undo2, Share2, Check } from 'lucide-react';
 import AboutPage from './components/layout/AboutPage';
 
 function App() {
-  const [currentView, setCurrentView] = React.useState('about');
+  const [currentView, setCurrentView] = React.useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.has('state') || params.has('gates') || params.has('init')) ? 'simulator' : 'about';
+  });
   const initialize = useCircuitStore((state) => state.initialize);
   const reset = useCircuitStore((state) => state.reset);
   const undo = useCircuitStore((state) => state.undo);
+
+  const gates = useCircuitStore((state) => state.gates);
+  const initialAngles = useCircuitStore((state) => state.initialAngles);
+  const [copied, setCopied] = React.useState(false);
+
+  const handleExportState = () => {
+    try {
+      const params = new URLSearchParams();
+      
+      if (gates.length > 0) {
+        const gatesString = gates.map(g => encodeURIComponent(g)).join(',');
+        params.set('gates', gatesString);
+      }
+      
+      if (initialAngles) {
+        params.set('init', `${initialAngles.theta},${initialAngles.phi}`);
+      }
+      
+      const queryString = params.toString();
+      const shareUrl = queryString 
+        ? `${window.location.origin}${window.location.pathname}?${queryString}`
+        : `${window.location.origin}${window.location.pathname}`;
+      
+      navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to export state:", err);
+    }
+  };
 
   useEffect(() => {
     initialize();
@@ -114,8 +147,23 @@ function App() {
 
                 {/* Bottom Controls Overlay */}
                 <div className="absolute bottom-6 left-6 z-10">
-                  <button className="flex items-center gap-2 px-6 py-3 bg-white/5 text-white border border-white/10 rounded-lg hover:bg-white/10 transition-all uppercase text-[10px] font-black tracking-widest backdrop-blur-md">
-                    Export State
+                  <button 
+                    onClick={handleExportState}
+                    className={`flex items-center gap-2 px-6 py-3 border rounded-lg transition-all uppercase text-[10px] font-black tracking-widest backdrop-blur-md shadow-lg ${
+                      copied 
+                        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" 
+                        : "bg-white/5 text-white border-white/10 hover:bg-white/10"
+                    }`}
+                  >
+                    {copied ? (
+                      <>
+                        <Check size={14} /> Link Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Share2 size={14} /> Export State
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
